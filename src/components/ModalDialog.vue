@@ -2,14 +2,17 @@
   <div class="bg" v-if="opening">
     <div class="modal">
       <p class="title">
-        title
+        {{ title }}
+      </p>
+      <p class="desc" v-if="desc">
+        {{ desc }}
       </p>
       <slot name="content"></slot>
       <div class="sep"></div>
-      <button class="cancel">
+      <button @click="$emit('cancel')" class="cancel">
         Cancel
       </button>
-      <button class="confirm">
+      <button @click="$emit('ok')" class="confirm">
         OK
       </button>
     </div>
@@ -20,6 +23,13 @@
 export default {
   name: 'ModalDialog',
   props: {
+    title: {
+      type: String,
+      required: true
+    },
+    desc: {
+      type: String
+    },
     opening: {
       type: Boolean,
       required: true
@@ -38,6 +48,12 @@ export default {
   background-color: rgba(0, 0, 0, 0.5);
 }
 
+* {
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 .modal {
   position: absolute;
   width: 60vw;
@@ -53,9 +69,6 @@ export default {
 }
 
 .confirm, .cancel {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   display: inline-block;
   margin: auto;
   padding: 0;
@@ -69,5 +82,17 @@ export default {
 
 .confirm {
   font-weight: 500;
+}
+
+.title {
+  margin: 10px 0;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.desc {
+  margin: 10px 0;
+  font-weight: bold;
+  font-size: 20px;
 }
 </style>

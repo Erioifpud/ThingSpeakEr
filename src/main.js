@@ -24,11 +24,27 @@ router.beforeEach((to, from, next) => {
 
 const store = new Vuex.Store({
   state: {
-    mainKey: ''
+    mainKey: '',
+    channelKeys: {}
   },
   mutations: {
     setMainKey (state, key) {
       state.mainKey = key
+    },
+    setChannelKeys (state, resp) {
+      var keys = {}
+      resp.data.forEach(c => {
+        var pair = {}
+        c.api_keys.forEach(o => {
+          if (o.write_flag) {
+            pair.write = o.api_key
+          } else {
+            pair.read = o.api_key
+          }
+        })
+        keys[c.id] = pair
+      })
+      state.channelKeys = keys
     }
   }
 })

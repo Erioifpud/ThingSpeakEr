@@ -1,10 +1,6 @@
 <template>
   <div class="list">
     <DeviceCard title="Device 1"></DeviceCard>
-    <DeviceCard title="Device 2"></DeviceCard>
-    <DeviceCard title="Device 3"></DeviceCard>
-    <DeviceCard title="Device 4"></DeviceCard>
-    <DeviceCard title="Device 5"></DeviceCard>
   </div>
 </template>
 

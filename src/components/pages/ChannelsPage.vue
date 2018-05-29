@@ -1,16 +1,22 @@
 <template>
   <div class="page">
     <TopBar title="Channels">
-      <div class="new-channel" slot="right" @click="handleAddChannel()">
+      <div class="new-channel" slot="right" @click="openModal()">
         <ion-icon class="add-icon" name="add"></ion-icon>
         <!-- <label>New</label> -->
       </div>
     </TopBar>
     <!-- <DeviceList></DeviceList> -->
     <ChannelList :channels="channels"></ChannelList>
-    <ModalDialog :opening="modalOpen">
+    <ModalDialog
+      @cancel="closeModal()"
+      @ok="confirmModal()"
+      title="New Channel"
+      :opening="modalOpen"
+    >
       <div slot="content">
-        <input type="text" placeholder="Name">
+        <input ref="nameInput" type="text" placeholder="Name*">
+        <input ref="descInput" type="text" placeholder="Description">
       </div>
     </ModalDialog>
   </div>
@@ -29,8 +35,41 @@ export default {
     }
   },
   methods: {
-    handleAddChannel () {
-      this.modalOpen = !this.modalOpen
+    openModal () {
+      this.modalOpen = true
+    },
+    closeModal () {
+      this.modalOpen = false
+    },
+    confirmModal () {
+      if (this.$refs.nameInput.value.trim() !== '') {
+        this.closeModal()
+        this.createChannel()
+      }
+    },
+    getChannels () {
+      var key = this.$store.state.mainKey
+      this.$http
+        .get(`https://api.thingspeak.com/channels.json?api_key=${key}`)
+        .then(r => {
+          this.channels = r.data
+          this.$store.commit('setChannelKeys', r)
+        })
+    },
+    createChannel () {
+      var name = this.$refs.nameInput.value.trim()
+      var desc = this.$refs.descInput.value.trim()
+      var key = this.$store.state.mainKey
+      this.$http
+        .post('https://api.thingspeak.com/channels.json', {
+          api_key: key,
+          name: name,
+          description: desc
+        }).then(r => {
+          if (r.status === 200) {
+            this.getChannels()
+          }
+        })
     }
   },
   components: {
@@ -39,13 +78,7 @@ export default {
     ModalDialog
   },
   mounted () {
-    var key = this.$store.state.mainKey
-    this.$http
-      .get(`https://api.thingspeak.com/channels.json?api_key=${key}`)
-      .then(r => {
-        console.log(r.data)
-        this.channels = r.data
-      })
+    this.getChannels()
   }
 }
 </script>
@@ -68,14 +101,19 @@ export default {
   font-size: 30px;
 }
 
+::placeholder {
+  color: #d1d0d5;
+}
+
 input {
   box-sizing: border-box;
   width: 54vw;
-  font-size: 18px;
+  font-size: 16px;
   border: solid 1px #c1c1c1;
   margin: 10px 0;
   margin-top: 0;
   border-radius: 5px;
   padding: 5px;
+  caret-color: #636fcc;
 }
 </style>

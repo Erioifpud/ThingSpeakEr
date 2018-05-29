@@ -30,7 +30,12 @@ export default {
   },
   methods: {
     handleClick (id) {
-
+      this.$router.push({
+        name: 'Devices',
+        params: {
+          id
+        }
+      })
     }
   }
 }
