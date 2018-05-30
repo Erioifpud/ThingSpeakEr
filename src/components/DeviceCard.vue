@@ -3,14 +3,22 @@
     <div class="content">
       <p class="title">
         {{ title }}
+        <ion-icon v-if="isOtherType" class="icon-alert" name="alert"></ion-icon>
       </p>
       <p class="desc">
         {{ desc }}
       </p>
     </div>
-    <div class="right power-btn" @click="power = !power">
-      <ion-icon class="power-icon" name="power"></ion-icon>
-    </div>
+    <template v-if="isSwitch">
+      <div class="right power-btn" @click="handleSwitchClick()">
+        <ion-icon class="power-icon" name="power"></ion-icon>
+      </div>
+    </template>
+    <template v-else>
+      <div class="right value-btn">
+        {{ data }}
+      </div>
+    </template>
   </div>
 </template>
 
@@ -22,6 +30,31 @@ export default {
       power: false
     }
   },
+  methods: {
+    handleSwitchClick () {
+      var id = this.$route.params.id
+      var key = this.$store.state.channelKeys[id].write
+      this.$http.post('https://api.thingspeak.com/update.json', {
+        api_key: key,
+        [this.field]: this.power ? '0' : '1'
+      }).then(r => {
+        if (r.data instanceof Object) {
+          this.power = r.data[this.field] === '0'
+        }
+      })
+    }
+  },
+  computed: {
+    isSensor: function () {
+      return this.type === 'Sensor'
+    },
+    isSwitch: function () {
+      return this.type === 'Switch'
+    },
+    isOtherType: function () {
+      return this.type !== 'Sensor' && this.type !== 'Switch'
+    }
+  },
   props: {
     title: {
       type: String,
@@ -30,6 +63,23 @@ export default {
     desc: {
       type: String,
       default: '...'
+    },
+    type: {
+      type: String,
+      default: undefined
+    },
+    data: {
+      type: String,
+      default: undefined
+    },
+    field: {
+      type: String,
+      required: true
+    }
+  },
+  mounted () {
+    if (this.isSwitch) {
+      this.power = this.data && this.data !== '0'
     }
   }
 }
@@ -56,6 +106,23 @@ export default {
   margin: 25px 15px;
   box-shadow: 0 2px 5px #acacac;
   transition: all 0.2s ease-in-out;
+}
+
+.value-btn {
+  position: relative;
+  width: 100px;
+  height: 50px;
+  border-radius: 50px;
+  background-color: #fff;
+  margin: 25px 15px;
+  box-shadow: 0 2px 5px #acacac;
+  transition: all 0.2s ease-in-out;
+  line-height: 50px;
+  font-size: 20px;
+  color: #707b7e;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-sizing: border-box;
 }
 
 .content {

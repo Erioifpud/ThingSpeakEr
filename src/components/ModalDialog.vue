@@ -8,10 +8,11 @@
         {{ desc }}
       </p>
       <slot name="content"></slot>
-      <div class="sep"></div>
+      <div class="sep-h"></div>
       <button @click="$emit('cancel')" class="cancel">
         Cancel
       </button>
+      <span class="sep-v"></span>
       <button @click="$emit('ok')" class="confirm">
         OK
       </button>
@@ -64,13 +65,17 @@ export default {
   transform: translate(-50%, -50%);
 }
 
-.sep {
+.sep-h {
   border-bottom: solid 1px #c1c1c1;
+}
+
+.sep-v {
+  border-left: solid 1px #c1c1c1;
 }
 
 .confirm, .cancel {
   display: inline-block;
-  margin: auto;
+  margin: auto 0;
   padding: 0;
   width: 29vw;
   font-size: 18px;
