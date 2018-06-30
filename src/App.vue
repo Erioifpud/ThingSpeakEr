@@ -6,7 +6,11 @@
 
 <script>
 export default {
-  name: 'App'
+  name: 'App',
+  created () {
+    var storage = window.localStorage
+    storage.getItem('history') || storage.setItem('history', [])
+  }
 }
 </script>
 

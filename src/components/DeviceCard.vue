@@ -39,7 +39,8 @@ export default {
         [this.field]: this.power ? '0' : '1'
       }).then(r => {
         if (r.data instanceof Object) {
-          this.power = r.data[this.field] === '0'
+          // console.log(r.data[this.field])
+          this.power = r.data[this.field] !== '0'
         }
       })
     }

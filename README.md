@@ -1,6 +1,8 @@
 # thingspeaker
 
-> A Vue.js project
+> ThingSpeak 简易客户端
+
+![preview1](pics/1.gif)
 
 ## Build Setup
 
